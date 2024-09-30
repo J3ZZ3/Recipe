@@ -1,0 +1,76 @@
+{
+  "users": [
+    {
+      "id": "7cd3",
+      "username": "jesse",
+      "email": "jesse.mashoana@gmail.com",
+      "password": "Mathrs32"
+    }
+  ],
+  "recipes": [
+    {
+      "id": 1,
+      "name": "Spaghetti Carbonara",
+      "description": "Classic Italian pasta dish with creamy sauce and pancetta.",
+      "ingredients": [
+        "spaghetti",
+        "pancetta",
+        "egg",
+        "parmesan cheese",
+        "black pepper"
+      ],
+      "instructions": "Cook spaghetti. In a bowl, mix eggs and cheese. Fry pancetta, then combine with spaghetti and egg mixture. Serve hot.",
+      "prepTime": "15 minutes",
+      "cookTime": "20 minutes",
+      "totalTime": "35 minutes"
+    },
+    {
+      "id": 2,
+      "name": "Chicken Tikka Masala",
+      "description": "Grilled chicken pieces simmered in a creamy tomato sauce.",
+      "ingredients": [
+        "chicken",
+        "yogurt",
+        "tomato sauce",
+        "cream",
+        "spices"
+      ],
+      "instructions": "Marinate chicken in yogurt and spices, grill. Cook tomato sauce, add grilled chicken, and cream. Simmer and serve.",
+      "prepTime": "30 minutes",
+      "cookTime": "40 minutes",
+      "totalTime": "1 hour 10 minutes"
+    },
+    {
+      "id": 3,
+      "name": "Beef Tacos",
+      "description": "Tasty tacos filled with spiced beef and fresh toppings.",
+      "ingredients": [
+        "ground beef",
+        "taco shells",
+        "lettuce",
+        "tomato",
+        "cheese"
+      ],
+      "instructions": "Brown beef with spices. Fill taco shells with beef and toppings. Serve with salsa.",
+      "prepTime": "10 minutes",
+      "cookTime": "15 minutes",
+      "totalTime": "25 minutes"
+    },
+    {
+      "id": 4,
+      "name": "Vegetable Stir Fry",
+      "description": "A quick and healthy stir fry with seasonal vegetables.",
+      "ingredients": [
+        "mixed vegetables",
+        "soy sauce",
+        "ginger",
+        "garlic",
+        "rice"
+      ],
+      "instructions": "Stir fry vegetables with ginger and garlic. Serve over rice.",
+      "prepTime": "5 minutes",
+      "cookTime": "10 minutes",
+      "totalTime": "15 minutes"
+    }
+  ]
+}
