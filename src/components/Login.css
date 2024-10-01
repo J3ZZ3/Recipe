@@ -1,0 +1,64 @@
+/* Login.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('./assets/unsplash.jpg') no-repeat center center fixed; /* Set your background image */
+    background-size: cover; /* Cover the entire viewport */
+}
+
+.login-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full height of the viewport */
+}
+
+.login-form {
+    background-color: transparency(255, 255, 255, 0); /* White background with transparency */
+    padding: 20px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Softer shadow for depth */
+    width: 300px; /* Set a fixed width for the form */
+}
+
+h2 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+input {
+    width: 100%; /* Full width for input fields */
+    padding: 10px; /* Padding inside input fields */
+    margin-bottom: 15px; /* Space below each input field */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Slightly rounded corners */
+    font-size: 16px; /* Font size */
+}
+
+button {
+    width: 100%; /* Full width for buttons */
+    padding: 10px; /* Padding inside the button */
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+p {
+    text-align: center; /* Center text */
+}
+
+p span {
+    color: #007bff; /* Blue color for the register link */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+p span:hover {
+    text-decoration: underline; /* Underline on hover */
+}

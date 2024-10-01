@@ -1,0 +1,20 @@
+/* src/index.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+}
+
+a {
+  color: inherit;
+}
+
+h1, h2, h3 {
+  color: #333;
+}
+
+button {
+  font-family: inherit;
+}

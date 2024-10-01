@@ -1,0 +1,44 @@
+/* Navbar.css */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Space between links and logout button */
+    align-items: center; /* Center vertically */
+    background-color: #333; /* Dark background */
+    padding: 10px 20px; /* Padding for the navbar */
+}
+
+.navbar-links {
+    list-style-type: none; /* Remove bullet points */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    display: flex; /* Use flexbox for layout */
+}
+
+.navbar-links li {
+    margin: 0; /* Remove margin between links */
+    padding: 0 15px; /* Optional: Add horizontal padding to each link */
+}
+
+.navbar-links li a {
+    color: white; /* White text */
+    text-decoration: none; /* Remove underline */
+    font-size: 16px; /* Font size */
+}
+
+.navbar-links li a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+.logout-button {
+    background-color: #f44336; /* Red background for logout */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 5px 10px; /* Smaller padding for a smaller button */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-left: auto; /* Pushes the logout button to the right */
+}
+
+.logout-button:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}

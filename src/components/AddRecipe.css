@@ -1,0 +1,50 @@
+/* AddRecipe.css */
+.container {
+    max-width: 600px; /* Set a maximum width for the form */
+    margin: 20px auto; /* Center the form horizontally */
+    padding: 20px; /* Add padding around the form */
+    background-color: #f9f9f9; /* Light background color */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+h2 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+input, textarea {
+    width: 100%; /* Full width for input fields */
+    padding: 10px; /* Padding inside input fields */
+    margin-bottom: 15px; /* Space below each input field */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Slightly rounded corners */
+    font-size: 16px; /* Font size */
+}
+
+textarea {
+    min-height: 100px; /* Minimum height for textarea */
+    resize: vertical; /* Allow vertical resizing */
+}
+
+button {
+    width: 100%; /* Full width for buttons */
+    padding: 10px; /* Padding inside the button */
+    background-color: #007bff; /* Blue background for button */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.error {
+    color: red; /* Error message color */
+    font-size: 14px; /* Font size for error messages */
+    margin-top: -10px; /* Space above error message */
+    margin-bottom: 10px; /* Space below error message */
+}
