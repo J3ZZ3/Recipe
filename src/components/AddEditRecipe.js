@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createRecipe, updateRecipe, getRecipeById } from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
 import './AddEditRecipe.css'; // Import the CSS for styling
 
-function AddEditRecipe() {
+function AddEditRecipe({ user }) {
     const [name, setName] = useState('');
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
@@ -11,41 +12,145 @@ function AddEditRecipe() {
     const [prepTime, setPrepTime] = useState('');
     const [cookTime, setCookTime] = useState('');
     const [servings, setServings] = useState('');
-    const [image, setImage] = useState(null); // State for the uploaded image
+    const [image, setImage] = useState('');
     const [isEdit, setIsEdit] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
+    const [showDownloadButton, setShowDownloadButton] = useState(false);
+    const [currentRecipe, setCurrentRecipe] = useState(null);
 
     useEffect(() => {
         if (id) {
+            setIsEdit(true);
             const fetchRecipe = async () => {
-                const recipe = await getRecipeById(id);
-                setName(recipe.name);
-                setIngredients(recipe.ingredients);
-                setInstructions(recipe.instructions);
-                setCategory(recipe.category);
-                setPrepTime(recipe.prepTime);
-                setCookTime(recipe.cookTime);
-                setServings(recipe.servings);
-                setImage(recipe.image); // Set the image if editing
-                setIsEdit(true);
+                try {
+                    const recipe = await getRecipeById(id);
+                    setName(recipe.name);
+                    setIngredients(recipe.ingredients);
+                    setInstructions(recipe.instructions);
+                    setCategory(recipe.category);
+                    setPrepTime(recipe.prepTime);
+                    setCookTime(recipe.cookTime);
+                    setServings(recipe.servings);
+                    setImage(recipe.image || '');
+                } catch (error) {
+                    console.error('Error fetching recipe:', error);
+                }
             };
             fetchRecipe();
         }
     }, [id]);
 
+    const generatePDF = (recipeData) => {
+        const pdf = new jsPDF();
+        const margin = 20;
+        let yPosition = margin;
+        const lineHeight = 10;
+        const pageWidth = pdf.internal.pageSize.width;
+
+        // Title
+        pdf.setFontSize(20);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(recipeData.name, margin, yPosition);
+        yPosition += lineHeight * 2;
+
+        // Category
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'normal');
+        pdf.text(`Category: ${recipeData.category}`, margin, yPosition);
+        yPosition += lineHeight;
+
+        // Time and Servings
+        pdf.text(`Preparation Time: ${recipeData.prepTime}`, margin, yPosition);
+        yPosition += lineHeight;
+        pdf.text(`Cooking Time: ${recipeData.cookTime}`, margin, yPosition);
+        yPosition += lineHeight;
+        pdf.text(`Servings: ${recipeData.servings}`, margin, yPosition);
+        yPosition += lineHeight * 2;
+
+        // Ingredients
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Ingredients:', margin, yPosition);
+        yPosition += lineHeight;
+        pdf.setFont('helvetica', 'normal');
+        const ingredientsList = recipeData.ingredients.split('\n');
+        ingredientsList.forEach(ingredient => {
+            if (yPosition > pdf.internal.pageSize.height - margin) {
+                pdf.addPage();
+                yPosition = margin;
+            }
+            pdf.text(`• ${ingredient.trim()}`, margin + 5, yPosition);
+            yPosition += lineHeight;
+        });
+        yPosition += lineHeight;
+
+        // Instructions
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Instructions:', margin, yPosition);
+        yPosition += lineHeight;
+        pdf.setFont('helvetica', 'normal');
+        
+        const splitInstructions = pdf.splitTextToSize(
+            recipeData.instructions, 
+            pageWidth - (margin * 2)
+        );
+        
+        splitInstructions.forEach(line => {
+            if (yPosition > pdf.internal.pageSize.height - margin) {
+                pdf.addPage();
+                yPosition = margin;
+            }
+            pdf.text(line, margin, yPosition);
+            yPosition += lineHeight;
+        });
+
+        // Add image if available
+        if (recipeData.image) {
+            try {
+                pdf.addPage();
+                pdf.text('Recipe Image:', margin, margin);
+                pdf.addImage(
+                    recipeData.image,
+                    'JPEG',
+                    margin,
+                    margin + 10,
+                    pageWidth - (margin * 2),
+                    100
+                );
+            } catch (error) {
+                console.error('Error adding image to PDF:', error);
+            }
+        }
+
+        // Save the PDF
+        pdf.save(`${recipeData.name.replace(/\s+/g, '_')}_recipe.pdf`);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const recipe = { name, ingredients, instructions, category, prepTime, cookTime, servings, image };
+        const recipeData = {
+            name,
+            ingredients,
+            instructions,
+            category,
+            prepTime,
+            cookTime,
+            servings,
+            image,
+            userId: user?.id,
+        };
+
         try {
             if (isEdit) {
-                await updateRecipe(id, recipe);
+                await updateRecipe(id, recipeData);
             } else {
-                await createRecipe(recipe);
+                await createRecipe(recipeData);
             }
-            navigate('/home');
+            setCurrentRecipe(recipeData);
+            setShowDownloadButton(true);
         } catch (error) {
             console.error('Error saving recipe:', error);
+            alert('Failed to save recipe. Please try again.');
         }
     };
 
@@ -62,9 +167,9 @@ function AddEditRecipe() {
 
     return (
         <div className="container">
-            <h2>{isEdit ? 'Edit Recipe' : 'Add Recipe'}</h2>
+            <h2>{isEdit ? 'Edit Recipe' : 'Add New Recipe'}</h2>
             <div className="form-recipe-container">
-                <form onSubmit={handleSubmit} className="recipe-form">
+                <form className="recipe-form" onSubmit={handleSubmit}>
                     <input
                         type="text"
                         placeholder="Recipe Name"
@@ -117,7 +222,20 @@ function AddEditRecipe() {
                         accept="image/*"
                         onChange={handleImageUpload}
                     />
-                    <button type="submit">{isEdit ? 'Update Recipe' : 'Add Recipe'}</button>
+                    <div className="button-container">
+                        <button type="submit" className="submit-button">
+                            {isEdit ? 'Update Recipe' : 'Add Recipe'}
+                        </button>
+                        {showDownloadButton && (
+                            <button
+                                type="button"
+                                className="download-pdf-button"
+                                onClick={() => generatePDF(currentRecipe)}
+                            >
+                                Download Recipe PDF
+                            </button>
+                        )}
+                    </div>
                 </form>
 
                 {/* Render the recipe as a card */}

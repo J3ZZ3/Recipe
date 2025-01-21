@@ -18,7 +18,7 @@ function AddRecipe() {
         const recipe = { name, ingredients, instructions, category, prepTime, cookTime, servings };
         try {
             await createRecipe(recipe);
-            navigate('/home'); // Redirect to home after adding a recipe
+            navigate('/'); // Redirect to home after adding a recipe
         } catch (error) {
             console.error('Error creating recipe:', error);
         }

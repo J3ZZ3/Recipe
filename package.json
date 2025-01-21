@@ -4,18 +4,22 @@
   "description": "A recipe management app built with React and JSON Server",
   "main": "index.js",
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "json-server": "^1.0.0-beta.3",
+    "jspdf": "^2.5.2",
     "react-router-dom": "^6.26.2",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "sweetalert2": "^11.10.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently \"npm run server\" \"npm run react-start\"",
+    "react-start": "react-scripts start",
+    "server": "json-server --watch db.json --port 3001",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "json-server --watch db.json --port 5000"
+    "eject": "react-scripts eject"
   },
   "author": "Jesse",
   "license": "ISC",
@@ -30,5 +34,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }

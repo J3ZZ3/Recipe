@@ -3,49 +3,62 @@ import { useParams } from 'react-router-dom';
 import { getUserById, updateUser } from '../api'; // Adjust the import according to your API structure
 import './Profile.css'; // Import the CSS file
 
-function Profile() {
-    const { id } = useParams(); // Get the user ID from the URL parameters
+function Profile({ user: currentUser, onProfileUpdate }) {
+    const { id } = useParams();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit profile modal visibility
     const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false); // State for credentials modal visibility
     const [editData, setEditData] = useState({
         name: '',
         surname: '',
-        email: '',
         username: '',
-        profilePicture: '',
+        profile_picture: '',
     });
     const [credentialsData, setCredentialsData] = useState({
         email: '',
         password: '',
     });
+    const [previewImage, setPreviewImage] = useState(null);
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const userData = await getUserById(id); // Fetch user data by ID
-                setUser(userData); // Set the user state with the fetched data
-                setEditData({
-                    name: userData.name,
-                    surname: userData.surname,
-                    email: userData.email,
-                    username: userData.username,
-                    profilePicture: userData.profilePicture, // Populate with existing profile picture
-                });
-                setCredentialsData({
-                    email: userData.email,
-                    password: '', // Leave password blank initially
-                });
+                setLoading(true);
+                setError(null);
+                
+                // If the profile being viewed is the current user's profile
+                if (currentUser && currentUser.id === id) {
+                    setUser(currentUser);
+                    setEditData({
+                        name: currentUser.name || '',
+                        surname: currentUser.surname || '',
+                        username: currentUser.username || '',
+                        profile_picture: currentUser.profile_picture || '',
+                    });
+                } else {
+                    const userData = await getUserById(id);
+                    if (userData) {
+                        setUser(userData);
+                        setEditData({
+                            name: userData.name || '',
+                            surname: userData.surname || '',
+                            username: userData.username || '',
+                            profile_picture: userData.profile_picture || '',
+                        });
+                    }
+                }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+                setError('Failed to load user profile');
             } finally {
-                setLoading(false); // Set loading to false after fetching
+                setLoading(false);
             }
         };
 
         fetchUser();
-    }, [id]);
+    }, [id, currentUser]);
 
     const handleEditClick = () => {
         setIsEditModalOpen(true);
@@ -65,8 +78,8 @@ function Profile() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setEditData((prevState) => ({
-            ...prevState,
+        setEditData(prev => ({
+            ...prev,
             [name]: value,
         }));
     };
@@ -81,14 +94,15 @@ function Profile() {
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setEditData((prevState) => ({
-                ...prevState,
-                profilePicture: reader.result,
-            }));
-        };
         if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result);
+                setEditData(prev => ({
+                    ...prev,
+                    profile_picture: reader.result,
+                }));
+            };
             reader.readAsDataURL(file);
         }
     };
@@ -96,12 +110,23 @@ function Profile() {
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
         try {
-            await updateUser(id, editData); // Update the user data using the API
-            setUser(editData); // Update the local state with the new data
-            alert('Profile updated successfully!');
-            handleCloseEditModal(); // Close the modal
+            if (editData.profile_picture && !editData.profile_picture.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i)) {
+                alert('Please enter a valid image URL (must end with .jpg, .jpeg, .png, .gif, or .webp)');
+                return;
+            }
+
+            const updatedUser = await updateUser(id, editData);
+            if (updatedUser) {
+                setUser(updatedUser);
+                setIsEditModalOpen(false);
+                if (onProfileUpdate && currentUser.id === id) {
+                    onProfileUpdate(updatedUser);
+                }
+                alert('Profile updated successfully!');
+            }
         } catch (error) {
-            console.error('Error updating user profile:', error);
+            console.error('Error updating profile:', error);
+            alert('Failed to update profile. Please try again.');
         }
     };
 
@@ -117,35 +142,63 @@ function Profile() {
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>; // Show loading indicator while fetching
-    }
-
-    if (!user) {
-        return <div>No user found.</div>; // Show message if no user data is found
-    }
+    if (loading) return <div className="profile-loading">Loading...</div>;
+    if (error) return <div className="profile-error">{error}</div>;
+    if (!user) return <div className="profile-error">User not found</div>;
 
     return (
         <div className="profile-container">
-            <div className="profile-card">
-                <h2>{user.name} {user.surname}'s Profile</h2>
-                <img src={user.profilePicture} alt="Profile" className="profile-picture" />
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Surname:</strong> {user.surname}</p>
-                <p><strong>Username:</strong> {user.username}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <button onClick={handleEditClick}>Edit Profile</button>
-                <button onClick={handleCredentialsClick}>Update Credentials</button>
+            <div className="profile-content">
+                <div className="profile-header">
+                    <img 
+                        src={user.profile_picture || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'} 
+                        alt="Profile" 
+                        className="profile-picture"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+                        }}
+                    />
+                    <h1>{user.name} {user.surname}</h1>
+                    <p className="username">@{user.username}</p>
+                </div>
+
+                <div className="profile-info">
+                    <div className="info-group">
+                        <label>Name</label>
+                        <p>{user.name}</p>
+                    </div>
+                    <div className="info-group">
+                        <label>Surname</label>
+                        <p>{user.surname}</p>
+                    </div>
+                    <div className="info-group">
+                        <label>Username</label>
+                        <p>{user.username}</p>
+                    </div>
+                    <div className="info-group">
+                        <label>Email</label>
+                        <p>{user.email}</p>
+                    </div>
+                </div>
+
+                {currentUser && currentUser.id === id && (
+                    <button 
+                        className="edit-profile-button"
+                        onClick={() => setIsEditModalOpen(true)}
+                    >
+                        Edit Profile
+                    </button>
+                )}
             </div>
 
-            {/* Modal for updating profile */}
             {isEditModalOpen && (
                 <div className="modal">
                     <div className="modal-content">
-                        <h2>Update Profile</h2>
+                        <h2>Edit Profile</h2>
                         <form onSubmit={handleUpdateProfile}>
-                            <label>
-                                Name:
+                            <div className="form-group">
+                                <label>Name</label>
                                 <input
                                     type="text"
                                     name="name"
@@ -153,9 +206,9 @@ function Profile() {
                                     onChange={handleInputChange}
                                     required
                                 />
-                            </label>
-                            <label>
-                                Surname:
+                            </div>
+                            <div className="form-group">
+                                <label>Surname</label>
                                 <input
                                     type="text"
                                     name="surname"
@@ -163,9 +216,9 @@ function Profile() {
                                     onChange={handleInputChange}
                                     required
                                 />
-                            </label>
-                            <label>
-                                Username:
+                            </div>
+                            <div className="form-group">
+                                <label>Username</label>
                                 <input
                                     type="text"
                                     name="username"
@@ -173,26 +226,28 @@ function Profile() {
                                     onChange={handleInputChange}
                                     required
                                 />
-                            </label>
-                            <label>
-                                Profile Picture:
+                            </div>
+                            <div className="form-group">
+                                <label>Profile Picture URL</label>
                                 <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
+                                    type="url"
+                                    name="profile_picture"
+                                    value={editData.profile_picture}
+                                    onChange={handleInputChange}
+                                    placeholder="https://example.com/image.jpg"
                                 />
-                                {editData.profilePicture && (
-                                    <img
-                                        src={editData.profilePicture}
-                                        alt="Profile Preview"
-                                        className="profile-picture-preview"
-                                    />
-                                )}
-                            </label>
-                            <button type="submit">Update Profile</button>
-                            <button type="button" onClick={handleCloseEditModal}>
-                                Cancel
-                            </button>
+                                <small className="input-help">Enter a valid image URL (ending in .jpg, .jpeg, .png, .gif, or .webp)</small>
+                            </div>
+                            <div className="modal-buttons">
+                                <button type="submit">Save Changes</button>
+                                <button 
+                                    type="button" 
+                                    onClick={() => setIsEditModalOpen(false)}
+                                    className="cancel-button"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

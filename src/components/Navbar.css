@@ -1,44 +1,281 @@
 /* Navbar.css */
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.navbar.scrolled {
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.98);
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
     display: flex;
-    justify-content: space-between; /* Space between links and logout button */
-    align-items: center; /* Center vertically */
-    background-color: #333; /* Dark background */
-    padding: 10px 20px; /* Padding for the navbar */
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+}
+
+.navbar-logo {
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-text {
+    color: #333;
+}
+
+.logo-accent {
+    color: #ff6b6b;
 }
 
 .navbar-links {
-    list-style-type: none; /* Remove bullet points */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    display: flex; /* Use flexbox for layout */
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 2rem;
 }
 
-.navbar-links li {
-    margin: 0; /* Remove margin between links */
-    padding: 0 15px; /* Optional: Add horizontal padding to each link */
+.nav-links-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
 }
 
-.navbar-links li a {
-    color: white; /* White text */
-    text-decoration: none; /* Remove underline */
-    font-size: 16px; /* Font size */
+.nav-links-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
 }
 
-.navbar-links li a:hover {
-    text-decoration: underline; /* Underline on hover */
+.nav-link {
+    text-decoration: none;
+    color: #333333;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-link i {
+    font-size: 1.1rem;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.nav-link.active {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-left: auto;
+}
+
+.user-profile-mini {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.user-profile-mini:hover {
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.profile-picture-mini {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ff6b6b;
+}
+
+.username-mini {
+    font-weight: 500;
+    color: #333;
 }
 
 .logout-button {
-    background-color: #f44336; /* Red background for logout */
-    color: white; /* White text */
-    border: none; /* No border */
-    padding: 5px 10px; /* Smaller padding for a smaller button */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    margin-left: auto; /* Pushes the logout button to the right */
+    background: none;
+    border: 2px solid #ff6b6b;
+    color: #ff6b6b;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
 }
 
 .logout-button:hover {
-    background-color: #d32f2f; /* Darker red on hover */
+    background: #ff6b6b;
+    color: white;
+}
+
+.mobile-menu-button {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.mobile-menu-button span {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background: #333;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-button.open span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-button.open span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-button.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-button {
+        display: flex;
+    }
+
+    .navbar-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1rem;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        margin-left: 0;
+    }
+
+    .navbar-links.open {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links-left, .nav-links-right {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .nav-link {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .logout-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .user-profile-mini {
+        justify-content: center;
+    }
+
+    .nav-controls {
+        gap: 1rem;
+    }
+
+    .username-mini {
+        display: none;
+    }
+
+    .logout-button {
+        padding: 0.5rem 1rem;
+    }
+
+    .logout-button span {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-container {
+        padding: 0 1rem;
+    }
+
+    .navbar-logo {
+        font-size: 1.5rem;
+    }
+}
+
+/* Add animations */
+@keyframes slideIn {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.navbar-links > * {
+    animation: slideIn 0.3s ease forwards;
+}
+
+/* Update existing navbar styles to use CSS variables */
+.navbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.nav-link {
+    color: #333333;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
 }
