@@ -1,70 +1,179 @@
-# Getting Started with Create React App
+# Recipe Management Application Documentation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Project Overview
 
-In the project directory, you can run:
 
-### `npm start`
+A full-stack web application for managing and discovering recipes, built with React and Supabase. Users can create, store, search, and share recipes, as well as discover recipes from external sources.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Technical Stack
 
-### `npm test`
+Frontend: React.js
+Backend: Supabase
+External API: MealDB API
+Authentication: Supabase Auth
+Storage: Supabase Storage
+PDF Generation: jsPDF
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## Core Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. User Authentication
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   - Registration
+   - Login/Logout
+   - Password Reset
+   - Email Verification
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. Recipe Management
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   - Create custom recipes
+   - Edit existing recipes
+   - Delete recipes
+   - View recipe details
+   - Download recipes as PDF
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+3. Recipe Discovery
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   - Search recipes
+   - View recipe details
+   - Download recipes as PDF
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+4. User Profile
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+   - View/Edit profile information
+   
+   - Manage personal recipes
+   
+   - Upload profile picture
 
-### Making a Progressive Web App
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+src/
+├── api/                 # API integration
+├── components/          # React components
+├── context/            # Context providers
+├── assets/            # Static assets
+└── styles/            # CSS styles
 
-### Advanced Configuration
+## Key Components
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### 1. App.js
+- Main application component
+- Handles routing
+- Manages authentication state
+- Provides theme context
 
-### Deployment
+### 2. api.js
+- Contains all API calls
+- Handles Supabase interactions
+- Manages MealDB API requests
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### 3. Components
+- AddEditRecipe: Recipe creation/editing
+- Home: Main dashboard
+- Login/Register: Authentication forms
+- Profile: User profile management
+- ViewRecipe: Recipe detail view
+- Navbar: Navigation component
 
-### `npm run build` fails to minify
+## API Integration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Supabase
+```javascript
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+```
+- Authentication
+- User data storage
+- Recipe storage
+- File storage
+
+### MealDB API
+```javascript
+const MEALDB_API_URL = 'https://www.themealdb.com/api/json/v1/1'
+```
+- Recipe search
+- Category filtering
+- Random recipes
+
+## Authentication Flow
+1. User registration
+2. Email verification
+3. Login
+4. Session management
+5. Protected routes
+
+## Data Models
+
+### User
+```javascript
+{
+  id: string,
+  email: string,
+  name: string,
+  profile_picture: string,
+  created_at: timestamp,
+  updated_at: timestamp
+}
+```
+
+### Recipe
+```javascript
+{
+  id: string,
+  user_id: string,
+  name: string,
+  ingredients: string,
+  instructions: string,
+  category: string,
+  image: string,
+  created_at: timestamp,
+  updated_at: timestamp
+}
+```
+
+## Styling
+- CSS Modules for component-specific styles
+- Responsive design
+- Dark/Light theme support
+- Mobile-first approach
+
+## Error Handling
+- Form validation
+- API error handling
+- User feedback
+- Loading states
+
+## Future Enhancements
+1. Recipe sharing
+2. Social features
+3. Recipe ratings
+4. Shopping list
+5. Meal planning
+
+## Development Setup
+1. Clone repository
+2. Install dependencies: `npm install`
+3. Configure environment variables
+4. Start development server: `npm start`
+
+## Environment Variables
+```
+REACT_APP_SUPABASE_URL=your_supabase_url
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+## Run the project
+```bash
+npm run dev
+```
+
+
