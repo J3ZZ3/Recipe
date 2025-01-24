@@ -26,6 +26,14 @@ function Navbar({ user, onLogout }) {
         return defaultProfilePic;
     };
 
+    const handleLogout = async () => {
+        try {
+            await onLogout(); // Call the logout function passed as a prop
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    };
+
     return (
         <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
             <div className="navbar-container">
@@ -50,7 +58,7 @@ function Navbar({ user, onLogout }) {
                                 {user.username || user.email.split('@')[0]}
                             </span>
                         </Link>
-                        <button onClick={onLogout} className="logout-button">
+                        <button onClick={handleLogout} className="logout-button">
                             <i className="fas fa-sign-out-alt"></i>
                             Logout
                         </button>
