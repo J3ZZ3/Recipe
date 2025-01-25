@@ -55,15 +55,6 @@ PDF Generation: jsPDF
    
    - Upload profile picture
 
-## Project Structure
-
-src/
-├── api/                 # API integration
-├── components/          # React components
-├── context/            # Context providers
-├── assets/            # Static assets
-└── styles/            # CSS styles
-
 ## Key Components
 
 ### 1. App.js
